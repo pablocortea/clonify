@@ -1,0 +1,106 @@
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background-color: black;
+    color: lightgrey;
+    font-family: system-ui;
+}
+
+h1 {
+    margin-left: 20px;
+    margin-bottom: 50px;
+    font-weight: 600;
+}
+
+h2 {
+    margin: 20px;
+    font-style: italic;
+}
+
+.app {
+    height: 100%;
+    width: 100%;
+    display: flex;
+}
+
+.left {
+    flex: 1;
+    overflow-y: scroll;
+    background-color: lightgrey;
+    color: black;
+}
+
+.right {
+    flex: 2;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.upload-form {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+}
+
+/* Estilos para la lista de canciones */
+.list {
+    list-style: none;
+    padding: 0;
+    margin: 2px;
+}
+
+.list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
+    align-items: center;
+    margin-left: 15px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-bottom: 3px solid #ccc;
+    cursor: pointer;
+}
+
+.list li:hover {
+    background-color: #5c4e03;
+    color: white;
+}
+
+.list li button {
+    margin-left: 10px;
+    margin-right: 0;
+    align-self: flex-end;
+}
+
+.current-song {
+    background-color: #f0f0f0;
+    font-weight: 600;
+}
+
+
+@media (max-width: 600px) {
+    .app {
+        flex-direction: column;
+    }
+
+    .left {
+        flex: 3;
+    }
+
+    .right {
+        flex: 1;
+    }
+
+    .upload-form {
+        display: none;
+    }
+}

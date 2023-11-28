@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <!-- Web responsive -->
+        <title>Clonify. Tu reproductor de música</title>
+        <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
+        <link rel="stylesheet" href="/styles.css" />
+    </head>
+
+    <body>
+
+        <!-- CUERPO DE LA APP -->
+        <div class="app">
+
+            <div class="left">
+                <h1><img src="/images/clonify-logo.png" alt="Clonify. Tu reproductor de música"> CLONIFY</h1>
+                <h2>Mi lista de música</h2>
+                <ul class="list"></ul>
+            </div>
+
+            <div class="right">
+                <img id="albumImage" src="/images/initial.jpg" alt="Album Cover" width="400" height="400"> <!-- Aquí se muestra la imagen de la canción actual -->
+                <h3 id="currentSongTitle">&nbsp;</h3> <!-- Aquí se muestra el título de la canción actual -->
+                <audio id="audioPlayer" controls></audio>
+            </div>
+
+            <!-- Espacio para subir canciones -->
+            <form class="upload-form" method="POST" action="/songs" enctype="multipart/form-data" onsubmit="return validateFile()">
+                Sube tu archivo .mp3 para añadirlo a la lista de reproducción >>>&nbsp;&nbsp;&nbsp;
+                <input type="file" name="song" accept=".mp3" /> <!-- Aquí puede modificarse para añadir más tipos de archivo -->
+                <input type="submit" value="Subir" />
+            </form>
+
+            <!-- En este div se muestran mensajes de confirmación o error -->
+            <div id="upload-message"></div>
+
+        </div>
+
+        <!-- JAVASCRIPT -->
+        <script src="main.js"></script>
+
+        <!-- Subida de archivos. Envía una petición POST al servidor con el nuevo archivo -->
+        <script>
+            document
+                .querySelector(".upload-form")
+                .addEventListener("submit", function (event) { // Cada vez que se envíe un archivo...
+                    event.preventDefault();
+
+                    const formData = new FormData(this);
+
+                    fetch("/songs", {
+                        method: "POST",
+                        body: formData, // En el body se manda la canción
+                    })
+                        .then((response) => {
+                            return response.text();
+                        })
+                        .then((data) => {
+                            document.getElementById("upload-message").innerHTML = data; // Muestra el mensaje del servidor
+
+                            if (data.includes("exitosamente")) {
+                                alert(data); // Muestra un pop-up con el texto
+                                location.reload(); // Recarga la página
+                            }
+                        })
+                        .catch((error) => {
+                            console.error("Error al subir la canción:", error);
+                        });
+                });
+        </script>
+
+        <!-- Validación de archivos. Envía mensaje si no hay archivo -->
+        <script>
+            function validateFile() {
+                const fileInput = document.querySelector("input[type='file']");
+                const file = fileInput.files[0];
+
+                if (!file) {
+                    alert("Por favor, selecciona un archivo.");
+                    return false; // Evita que se envíe el formulario si no hay archivo seleccionado
+                }
+                return true; // Envía el formulario si hay un archivo seleccionado
+            }
+        </script>
+
+        <!-- Borrado de elementos. Envía una petición DELETE al servidor para borrar la referencia al archivo -->
+        <script>
+            function deleteSong(songName) {
+                fetch(`/songs/${encodeURIComponent(songName)}`, { // La canción seleccionada...
+                    method: "DELETE",
+                })
+                    .then((response) => {
+                        if (response.ok) {
+                            alert(`La canción ${songName} ha sido eliminada.`); // Muestra un pop-up con el mensaje
+                            location.reload(); // Recarga la página después de la eliminación
+                        } else {
+                            console.error("Error al eliminar la canción.");
+                        };
+                    })
+                    .catch((error) => {
+                        console.error("Error de red:", error);
+                    });
+            };
+        </script>
+    </body>
+</html>
